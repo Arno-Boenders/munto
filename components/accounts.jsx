@@ -108,10 +108,12 @@ function CsvAccount({ a, onImport }) {
 // opens in an app window and the app notices by itself when you're done; in a browser it opens in a new tab,
 // and you can paste the address you end up on if it doesn't come back on its own.
 // The bank's login page, from Enable Banking: opened only when it really is an https page (never
-// javascript: or another scheme). In the desktop app it opens in the app's own login window.
-function openBankPage(url, inApp) {
+// javascript: or another scheme). In the desktop app it opens in the app's own login window: one per link,
+// named after it. A shared name would load the bank page into whatever window still had it (the control
+// panel, often behind Munto's own), so nothing seemed to open. It's brought to the front, also when opened again.
+function openBankPage(url, inApp, state) {
   try { if (new URL(url).protocol !== 'https:') return; } catch { return; }
-  window.open(url, inApp ? 'munto-bank' : '_blank');
+  window.open(url, inApp ? `munto-bank-${state}` : '_blank')?.focus();
 }
 
 // embedded: inside the setup guide, which has its own heading and Back button.
@@ -150,7 +152,7 @@ export function LinkPanel({ preselect, linkedBanks, onClose, embedded = false })
       const r = await api('/api/link/start', { method: 'POST', body: { bank, browser: !inApp } });
       setLink(r);
       setStep('waiting');
-      openBankPage(r.url, inApp);
+      openBankPage(r.url, inApp, r.state);
       clearInterval(poll.current);
       poll.current = setInterval(async () => {
         const s = await api(`/api/link/status?state=${encodeURIComponent(r.state)}`).catch(() => null);
@@ -211,7 +213,7 @@ export function LinkPanel({ preselect, linkedBanks, onClose, embedded = false })
               </div>
             </div>
           ) : null}
-          <p className="sub"><button className="link-btn" type="button" onClick={() => openBankPage(link.url, inApp)}>Open the bank page again</button></p>
+          <p className="sub"><button className="link-btn" type="button" onClick={() => openBankPage(link.url, inApp, link.state)}>Open the bank page again</button></p>
         </div>
       ) : (
         <p className="link-step"><b>Connected.</b> Bringing in your transactions…</p>
@@ -238,7 +240,7 @@ function ControlPanelSteps({ bank, appId, retry, inApp, onReady, onBack }) {
         <li>Come back here and click <b>{`Go to ${bank}`}</b>.</li>
       </ol>
       <div className="link-row">
-        <button className="btn" type="button" onClick={() => window.open(CONTROL_PANEL, inApp ? 'munto-bank' : '_blank')}>Open the control panel</button>
+        <button className="btn" type="button" onClick={() => window.open(CONTROL_PANEL, inApp ? 'munto-control-panel' : '_blank')?.focus()}>Open the control panel</button>
         <button className="btn btn-ink" type="button" onClick={onReady}><Icon name="bank" />{retry ? `Try ${bank} again` : `I’ve done this · go to ${bank}`}</button>
         {!retry ? <button className="btn btn-ghost" type="button" onClick={onReady}>It’s already linked</button> : null}
         <button className="btn btn-ghost" type="button" onClick={onBack}>Choose another bank</button>
