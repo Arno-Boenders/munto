@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { allowedRemote, checkForUpdate, compareVersions, noteLines, repoOf, scrub } from '../src/updates.js';
+import { allowedRemote, checkForUpdate, compareVersions, isReleasePage, noteLines, repoOf, scrub } from '../src/updates.js';
 
 // A downloaded copy: a folder with a package.json and no git. The fake fetch stands in for GitHub.
 const copy = (version, extra = {}) => {
@@ -47,10 +47,19 @@ test('a link to anywhere else is replaced by the release page, and a failed chec
   assert.match((await checkForUpdate(copy('0.4.0'), { fetchFn: github({}, 500) })).reason, /didn’t answer/);
 });
 
+test('only a page of the project’s own releases', () => {
+  assert.ok(isReleasePage('https://github.com/a/b/releases/tag/v1.0.0', 'a/b'));
+  for (const bad of ['https://github.com/a/b/releases/../../../c/d', 'https://github.com.evil.example/a/b/releases/x', 'http://github.com/a/b/releases/x', 'javascript:alert(1)', '']) {
+    assert.ok(!isReleasePage(bad, 'a/b'), bad);
+  }
+});
+
 test('a fork checks its own releases, and release notes become plain lines', () => {
   assert.equal(repoOf({ repository: { url: 'https://github.com/someone/fork.git' } }), 'someone/fork');
   assert.equal(repoOf({ repository: 'git+https://github.com/someone/fork' }), 'someone/fork');
-  assert.equal(repoOf({}), 'Arno-Boenders/munto');
+  for (const url of [undefined, 'https://evilgithub.com/a/b', 'https://evil.example/github.com/a/b', 'https://github.com/a/..']) {
+    assert.equal(repoOf({ repository: { url } }), 'Arno-Boenders/munto', url);
+  }
   assert.deepEqual(noteLines('1. [Link](https://x.example) text\n> quote\n\n- `code`'), ['Link text', 'quote', 'code']);
 });
 

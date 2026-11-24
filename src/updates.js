@@ -20,7 +20,8 @@ export const allowedRemote = (url) => /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+?
 const DEFAULT_REPO = 'Arno-Boenders/munto';
 export const repoOf = (pkg) => {
   const url = typeof pkg.repository === 'string' ? pkg.repository : pkg.repository?.url;
-  return String(url ?? '').match(/github\.com[/:]([\w.-]+\/[\w.-]+?)(\.git)?\/?$/)?.[1] ?? DEFAULT_REPO;
+  const [, owner, name] = String(url ?? '').match(/^(?:git\+)?https:\/\/github\.com\/([\w-]+)\/([\w.-]+?)(?:\.git)?\/?$/) ?? [];
+  return owner && !/^\.+$/.test(name) ? `${owner}/${name}` : DEFAULT_REPO;
 };
 // 1 when a is newer than b, -1 when older, 0 when the same ("v" and anything after "-" ignored).
 export function compareVersions(a, b) {
@@ -30,9 +31,17 @@ export function compareVersions(a, b) {
   return 0;
 }
 // The release notes as short plain lines: list items and sentences, without Markdown or links.
-export const noteLines = (body) => String(body ?? '').split(/\r?\n/)
+export const noteLines = (body) => String(body ?? '').slice(0, 8000).split(/\r?\n/)
   .map((l) => l.replace(/^\s*(?:[-*+]|\d+\.)\s+/, '').replace(/[#*_`>]/g, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').trim())
   .filter((l) => l && !/^(full changelog|what's changed)/i.test(l)).slice(0, 8).map((l) => l.slice(0, 200));
+
+// A page of this project's own releases on GitHub (parsed, so ".." can't lead elsewhere).
+export function isReleasePage(raw, repo) {
+  try {
+    const u = new URL(raw);
+    return u.origin === 'https://github.com' && u.pathname.startsWith(`/${repo}/releases/`);
+  } catch { return false; }
+}
 
 async function latestRelease(repo, version, fetchFn) {
   let res;
@@ -47,7 +56,7 @@ async function latestRelease(repo, version, fetchFn) {
   const latest = String(release.tag_name ?? '').replace(/^v/i, '');
   // Only ever this project's own release page: the Download button opens it.
   const page = String(release.html_url ?? '');
-  const url = page.startsWith(`https://github.com/${repo}/releases/`) ? page : `https://github.com/${repo}/releases/latest`;
+  const url = isReleasePage(page, repo) ? page : `https://github.com/${repo}/releases/latest`;
   const checkedAt = new Date().toISOString();
   if (!latest || compareVersions(latest, version) <= 0) return { version, canUpdate: false, reason: null, checkedAt };
   return { version, canUpdate: false, reason: null, checkedAt, download: { version: latest, url, changes: noteLines(release.body) } };
