@@ -160,7 +160,7 @@ function Updates() {
         ) : <p className="setup-note"><Icon name="check" />{info.reason ?? 'You have the latest version.'}</p>}
       <div className="link-row" style={{ marginTop: 10 }}>
         <button className="btn btn-sm" type="button" onClick={check} disabled={!!busy}>{busy === 'check' ? 'Checking…' : 'Check for updates'}</button>
-        {info?.download ? <button className="btn btn-sm btn-ink" type="button" onClick={() => window.open(info.download.url, '_blank')}>{`Download ${info.download.version}`}</button> : null}
+        {info?.download ? <button className="btn btn-sm btn-ink" type="button" onClick={() => window.open(info.download.url, '_blank', 'noopener')}>{`Download ${info.download.version}`}</button> : null}
         {info?.canUpdate && info.inApp ? <button className="btn btn-sm btn-ink" type="button" onClick={update} disabled={!!busy}><Icon name="sync" />{busy === 'update' ? 'Updating…' : 'Update and restart'}</button> : null}
       </div>
       {error ? <p className="link-error" role="alert">{error}</p> : null}
