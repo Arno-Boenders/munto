@@ -195,7 +195,7 @@ export function EnableBankingStep({ state, onSaved }) {
         application of your own.</p>
       <ol className="link-steps">
         <li><b>Create a free account</b> at Enable Banking and sign in to the control panel.{' '}
-          <button className="link-btn" type="button" onClick={() => window.open(CONTROL_PANEL, inApp ? 'munto-bank' : '_blank')}>Open the control panel</button></li>
+          <button className="link-btn" type="button" onClick={() => window.open(CONTROL_PANEL, inApp ? 'munto-control-panel' : '_blank')?.focus()}>Open the control panel</button></li>
         <li>Under <b>API applications</b>, register a new application: environment <b>Production</b>, any name (e.g. “Munto”), and
           as allowed redirect URL exactly <code>{redirectUrl}</code>{' '}
           <button className="link-btn" type="button" onClick={copy}>{copied ? 'Copied ✓' : 'Copy'}</button>.</li>
@@ -252,7 +252,6 @@ export function AiStep({ onSaved }) {
   const [auto, setAuto] = useState(true);
   const [busy, setBusy] = useState(null);
   const [result, setResult] = useState(null); // { ok, text }
-  const inApp = typeof navigator !== 'undefined' && /Electron/.test(navigator.userAgent);
 
   useEffect(() => {
     api('/api/ai').then((st) => { setStatus(st); setProvider(st.chosen ? st.provider : null); setModel(st.model ?? ''); setOllamaUrl(st.ollamaUrl); setSendAmounts(st.sendAmounts); setAuto(st.auto); }).catch((err) => setResult({ ok: false, text: err.message }));
@@ -320,7 +319,7 @@ export function AiStep({ onSaved }) {
           {needsKey ? (
             <label className="field-col"><span>{`${p.name} key`}</span>
               <input type="password" value={key} onChange={(e) => setKey(e.target.value)} placeholder={savedKey ? `Saved (…${savedKey.slice(-4)}): type a new one to replace it` : p.keyHint} autoComplete="off" spellCheck={false} />
-              {p.keysUrl ? <button className="link-btn" type="button" onClick={() => window.open(p.keysUrl, inApp ? 'munto-bank' : '_blank')} style={{ justifySelf: 'start' }}>Get a key</button> : null}
+              {p.keysUrl ? <button className="link-btn" type="button" onClick={() => window.open(p.keysUrl, '_blank')} style={{ justifySelf: 'start' }}>Get a key</button> : null}
             </label>
           ) : null}
           {provider === 'ollama' ? (
