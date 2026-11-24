@@ -93,7 +93,11 @@ export function startBackground({ origin, showWindow, root, checkForUpdate, last
   let update = null; // the last check
   async function lookForUpdate() {
     try { update = await checkForUpdate(); } catch { return; }
-    // One notification per new version.
+    // One notification per new version. A downloaded copy gets a new version by downloading it.
+    if (update.download && state.notifiedUpdate !== `release:${update.download.version}`) {
+      notify(`Munto ${update.download.version} is out`, 'Download it from Settings.', '/settings#updates');
+      state.notifiedUpdate = `release:${update.download.version}`; save();
+    }
     const latest = update.behind ? `${update.upstream}@${update.behind}:${update.changes[0]}` : null;
     if (latest && state.notifiedUpdate !== latest) {
       notify('An update for Munto', `${plural(update.behind, 'change')}${update.changes[0] ? `, like “${update.changes[0]}”` : ''}. Update from Settings.`, '/settings#updates');
@@ -139,7 +143,8 @@ export function startBackground({ origin, showWindow, root, checkForUpdate, last
       { label: 'Open Munto', click: () => showWindow() },
       ...(status?.uncategorised ? [{ label: `Sort ${status.uncategorised}…`, click: () => showWindow('/review') }] : []),
       { label: 'Sync now', enabled: !syncing, click: () => sync() },
-      ...(update?.behind ? [{ label: `Update available (${plural(update.behind, 'change')})…`, click: () => showWindow('/settings#updates') }] : []),
+      ...(update?.behind ? [{ label: `Update available (${plural(update.behind, 'change')})…`, click: () => showWindow('/settings#updates') }]
+        : update?.download ? [{ label: `Munto ${update.download.version} is out…`, click: () => showWindow('/settings#updates') }] : []),
       { type: 'separator' },
       { label: 'Open at login', type: 'checkbox', checked: atLogin, enabled: loginItems,
         toolTip: loginItems ? 'Starts quietly and syncs every morning' : 'Only for the installed app (npm run app:install), on macOS and Windows',
