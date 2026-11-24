@@ -1,0 +1,33 @@
+name: A rule for a common merchant
+description: Suggest a starter rule, so a well-known business sorts itself for everyone.
+labels: [rules]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        New users start with the rules in `config/categories.example.json`. Suggest a **public business** that many people pay (a supermarket chain, a transport company, a utility). Never a person, and never something that shows what you bought.
+  - type: input
+    id: merchant
+    attributes:
+      label: Business
+      description: How its name appears in bank transactions.
+      placeholder: Delhaize
+    validations:
+      required: true
+  - type: input
+    id: pot
+    attributes:
+      label: Pot
+      placeholder: Groceries
+    validations:
+      required: true
+  - type: input
+    id: country
+    attributes:
+      label: Country
+      placeholder: Belgium
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Other spellings it appears under, or a reason it belongs in that pot.

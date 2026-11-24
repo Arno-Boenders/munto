@@ -1,0 +1,46 @@
+name: My bank's CSV isn't read right
+description: Import a CSV guessed the wrong columns, or couldn't read the amounts or dates.
+labels: [csv import]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Munto reads CSV exports without knowing the bank: it guesses the columns from their names. To add your bank's names, we only need **the header row** and **one made-up row** in the same format. **Never paste rows from your own export.** Change every value: the date, the amount, the names, the IBAN.
+  - type: input
+    id: bank
+    attributes:
+      label: Bank
+      description: The bank whose export it is, and the country.
+      placeholder: Bank A, Belgium
+    validations:
+      required: true
+  - type: textarea
+    id: header
+    attributes:
+      label: The header row
+      description: The first line with column names, exactly as in the file (with its separators). If there are lines of account details above it, describe them instead of pasting them.
+      render: text
+      placeholder: Rekeningnummer;Boekingsdatum;Bedrag;Munt;Naam tegenpartij;Omschrijving
+    validations:
+      required: true
+  - type: textarea
+    id: row
+    attributes:
+      label: One made-up row in the same format
+      description: Same separators, same date and amount format, but invented values.
+      render: text
+      placeholder: BE00 0000 0000 0000;02/11/2026;-12,34;EUR;Bakery;Card payment
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What went wrong?
+      description: Which columns were guessed wrong, or what the preview showed.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: The row above is made up, and nothing here comes from my own statements.
+          required: true

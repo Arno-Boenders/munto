@@ -1,0 +1,88 @@
+{
+  "features": { "trends": true, "savings": true, "cut": false, "rules": false },
+  "categories": [
+    "Income",
+    "Housing",
+    "Utilities",
+    "Groceries",
+    "Eating out",
+    "Transport",
+    "Subscriptions",
+    "Shopping",
+    "Health",
+    "Insurance",
+    "Leisure",
+    "Travel",
+    "Friends & gifts",
+    "Cash",
+    "Savings & transfers",
+    "Other"
+  ],
+  "incomeCategories": [
+    "Income"
+  ],
+  "income": {
+    "salary": [],
+    "paydayFromDay": 20,
+    "expectedMonthlyCents": null
+  },
+  "transferCategory": "Savings & transfers",
+  "ownIbans": [],
+  "ownAccountNames": {},
+  "rules": [
+    {
+      "match": "\\bloon\\b|salaris|wedde|salary",
+      "direction": "in",
+      "category": "Income"
+    },
+    {
+      "match": "\\bhuur\\b|immo ",
+      "direction": "out",
+      "category": "Housing"
+    },
+    {
+      "match": "ryanair|brussels airlines|easyjet|transavia|vueling|wizz ?air|\\bklm\\b|lufthansa|\\btui\\b|corendon|eurostar|thalys|\\bdb bahn|\\bsncf\\b|flixbus|booking\\.com|airbnb|expedia|\\bhotel|hostel|\\bibis\\b|novotel|brussels airport|charleroi airport",
+      "category": "Travel"
+    },
+    {
+      "match": "proximus|telenet|orange belgium|mobile vikings|scarlet|engie|luminus|eneco|farys|watergroep|fluvius",
+      "category": "Utilities"
+    },
+    {
+      "match": "delhaize|colruyt|aldi|lidl|carrefour|albert heijn|\\bokay\\b|\\bspar\\b|intermarch",
+      "category": "Groceries"
+    },
+    {
+      "match": "takeaway|deliveroo|uber eats|mcdonald|\\bquick\\b|panos|starbucks|frituur|friterie|pizzeria|brasserie|bistro|restaurant|\\bcaf[eé]\\b",
+      "category": "Eating out"
+    },
+    {
+      "match": "\\bq8\\b|totalenergies|\\besso\\b|\\bshell\\b|gabriels|dats 24|lukoil|texaco|\\bgulf\\b|octa\\+|nmbs|sncb|de lijn|interparking|blue-bike|\\buber\\b|ubr\\*|bolt\\.eu|cambio",
+      "category": "Transport"
+    },
+    {
+      "match": "spotify|netflix|disney|basic-fit|youtube|icloud|apple\\.com|\\bgym\\b|fitness",
+      "category": "Subscriptions"
+    },
+    {
+      "match": "bol\\.com|coolblue|zalando|\\bzara\\b|\\bh&m\\b|\\baction\\b|ikea|amazon|amzn|decathlon|mediamarkt|vanden borre|hema\\b|kruidvat",
+      "category": "Shopping"
+    },
+    {
+      "match": "mutualiteit|mutualite|apotheek|pharmacie|dokter|tandarts|solidaris|helan|partena|ziekenfonds|\\bkine\\b|kinesi|kineforma",
+      "category": "Health"
+    },
+    {
+      "match": "ag insurance|verzekering|ethias|baloise|allianz|\\bdvv\\b",
+      "category": "Insurance"
+    },
+    {
+      "match": "kinepolis|cinema|bioscoop|ticketmaster|eventbrite|bowling|zwembad",
+      "category": "Leisure"
+    },
+    {
+      "match": "geldopname|cash withdrawal",
+      "category": "Cash"
+    }
+  ]
+}

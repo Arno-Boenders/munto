@@ -1,0 +1,19 @@
+node_modules/
+.next/
+.env*
+!.env.example
+secrets/
+data/
+# a separate data folder for development (MUNTO_DATA_DIR=./dev-data, see CONTRIBUTING.md)
+dev-data/
+*.pem
+# your own pots, rules and IBANs (copied from categories.example.json on first run)
+config/categories.json
+# the old copy kept when it moved to your data folder
+config/categories.json.moved
+# local design-tool snapshots (contain real amounts)
+.impeccable/
+.DS_Store
+.next-app/
+dist/
+electron/launcher/source.json

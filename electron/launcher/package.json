@@ -1,0 +1,9 @@
+{
+  "name": "munto",
+  "productName": "Munto",
+  "version": "0.1.0",
+  "description": "Munto: local-first budgeting",
+  "type": "module",
+  "main": "main.js",
+  "private": true
+}

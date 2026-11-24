@@ -1,0 +1,33 @@
+# Runs the tests and checks the app builds on every push and pull request.
+# Uses no secrets and no real data: the tests make their own temporary database and config.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    # Linux and Windows, so the npm commands, paths and builds keep working on both (macOS is tested by hand).
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: 1 # the tests and the web build don't need the desktop app
+      - run: npm test
+      - run: npm run build
+        env:
+          DB_PATH: ${{ runner.temp }}/budget.db
+          CONFIG_PATH: ${{ runner.temp }}/categories.json

@@ -1,0 +1,83 @@
+{
+  "name": "munto",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "description": "Local-first budgeting app that pulls transactions from Belgian banks via Enable Banking",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "cert": "sh scripts/make-cert.sh",
+    "banks": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/banks.js",
+    "link": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/link.js",
+    "sync": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/sync.js",
+    "accounts": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/accounts.js",
+    "schedule": "node --disable-warning=ExperimentalWarning src/schedule.js",
+    "seed": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/seed.js",
+    "categorise": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/categorise.js",
+    "review": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/review.js",
+    "report": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/report.js",
+    "ui": "node scripts/run.mjs ui",
+    "build": "node scripts/run.mjs build",
+    "test": "node scripts/run.mjs test",
+    "start": "node scripts/run.mjs start",
+    "app": "node scripts/run.mjs app",
+    "icon": "electron electron/make-icon.js",
+    "app:install": "node scripts/app-install.mjs",
+    "dist": "node scripts/dist.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
+    "next": "^16.4.6",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3"
+  },
+  "main": "electron/main.js",
+  "build": {
+    "appId": "app.munto",
+    "productName": "Munto",
+    "directories": {
+      "app": "electron/launcher",
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "electronDist": "node_modules/electron/dist",
+    "electronVersion": "44.9.0",
+    "asar": false,
+    "mac": {
+      "target": [
+        "dir"
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.finance",
+      "identity": null
+    },
+    "files": [
+      "main.js",
+      "package.json",
+      "source.json",
+      "!node_modules{,/**/*}"
+    ],
+    "npmRebuild": false,
+    "win": {
+      "target": [
+        "dir"
+      ],
+      "icon": "build/icon.png"
+    },
+    "linux": {
+      "target": [
+        "dir"
+      ],
+      "icon": "build/icon.png",
+      "category": "Office",
+      "executableName": "munto"
+    }
+  },
+  "license": "PolyForm-Noncommercial-1.0.0"
+}
