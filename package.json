@@ -1,6 +1,6 @@
 {
   "name": "munto",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "private": true,
   "type": "module",
   "description": "Local-first budgeting app that pulls transactions from Belgian banks via Enable Banking",
