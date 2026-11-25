@@ -29,6 +29,9 @@ app protects itself, including what it doesn't do.
 
   Never IBANs or balances. Nothing the AI suggests is saved until you approve it, and everything works
   with AI off.
+- **To GitHub, to check for updates:** a copy installed from source fetches from the repository it follows; a
+  downloaded copy asks GitHub for this project's latest release (when Munto opens, once a day, and from Settings → Updates). Nothing about
+  you or your money is sent, only the request itself.
 
 ## How the app protects itself
 
@@ -54,9 +57,11 @@ app protects itself, including what it doesn't do.
   switched off: `scripts/dev-server.mjs`.)
 - **The database isn't encrypted** by Munto. It relies on your account's file permissions and on disk
   encryption (FileVault on macOS, BitLocker on Windows); turn that on.
-- **The desktop app is built on your own computer and signed only for it** (no Apple or Microsoft
-  signature). That's why you build it yourself from this repository.
-- **Updates aren't signed.** The Update button only pulls from a GitHub repository over https (the one this
+- **The downloads aren't signed yet** (no Apple or Microsoft signature), so your system warns the first time.
+  They're built by GitHub from this repository (the *Release* workflow). Built from source, the app is signed
+  for your own computer only.
+- **Updates aren't signed.** A downloaded copy never updates itself: it only tells you about a new release and
+  opens its page on GitHub. For a copy from source, the Update button only pulls from a GitHub repository over https (the one this
   copy follows), with git's riskier options off, and never over changes of your own; but it trusts that
   repository. Releases signed with a key the app checks are on the roadmap.
 - **Keys are files** (the Enable Banking key and AI API keys, readable only by you) for now; moving them to

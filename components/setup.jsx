@@ -143,7 +143,13 @@ function Updates() {
         <span className="sub">{info ? `Version ${info.version}${info.local ? ` · ${info.local}` : ''}` : ''}</span>
       </div>
       {!info ? <p className="sub">{busy === 'check' ? 'Checking GitHub…' : ''}</p>
-        : info.behind ? (
+        : info.download ? ( // a downloaded copy: the new version is downloaded by hand
+          <div className="setup-body" style={{ padding: 0 }}>
+            <p><b>{`Munto ${info.download.version} is out`}</b>{info.download.changes.length ? ':' : '.'}</p>
+            {info.download.changes.length ? <ul className="setup-changes">{info.download.changes.map((c, i) => <li key={i}>{c}</li>)}</ul> : null}
+            <p className="sub">Download it and install it over this one. Your data stays where it is.</p>
+          </div>
+        ) : info.behind ? (
           <div className="setup-body" style={{ padding: 0 }}>
             <p><b>{`${info.changeCount ?? info.behind} change${(info.changeCount ?? info.behind) === 1 ? '' : 's'} since your version`}</b>{info.changes.length ? ':' : '.'}</p>
             {info.changes.length ? <ul className="setup-changes">{info.changes.map((c, i) => <li key={i}>{c}</li>)}</ul> : null}
@@ -154,6 +160,7 @@ function Updates() {
         ) : <p className="setup-note"><Icon name="check" />{info.reason ?? 'You have the latest version.'}</p>}
       <div className="link-row" style={{ marginTop: 10 }}>
         <button className="btn btn-sm" type="button" onClick={check} disabled={!!busy}>{busy === 'check' ? 'Checking…' : 'Check for updates'}</button>
+        {info?.download ? <button className="btn btn-sm btn-ink" type="button" onClick={() => window.open(info.download.url, '_blank', 'noopener')}>{`Download ${info.download.version}`}</button> : null}
         {info?.canUpdate && info.inApp ? <button className="btn btn-sm btn-ink" type="button" onClick={update} disabled={!!busy}><Icon name="sync" />{busy === 'update' ? 'Updating…' : 'Update and restart'}</button> : null}
       </div>
       {error ? <p className="link-error" role="alert">{error}</p> : null}

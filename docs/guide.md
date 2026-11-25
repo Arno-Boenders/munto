@@ -199,8 +199,10 @@ What it does by itself:
   as the computer wakes up after that. Closing the window keeps it running in the menu bar or tray.
 - **Menu-bar icon:** when it last synced, how many to sort, *Sync now*, *Open at login* (starts quietly, no
   window), *Back up your data* and *Show data folder*.
-- **Notifications:** new transactions after the morning sync, a failed sync, and from a week before a bank's
-  access ends.
+- **Notifications:** new transactions after the morning sync, a failed sync, from a week before a bank's
+  access ends, and when a new version is out. A downloaded copy can't update itself: it opens the new version's
+  page on GitHub, and you install it over the old one (your data stays where it is). Built from source,
+  **Update** does it for you.
 - **Backups** in `backups/` in your data folder: one before the first sync of each day and one before each
   update (the last 14 are kept), plus the ones you make from the menu (kept).
 - **Claude Code** is found the way your terminal finds it, even when Munto is opened from the Dock.
