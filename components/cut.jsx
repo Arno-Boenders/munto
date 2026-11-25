@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { look } from '@/lib/look.js';
 import { fmtDate, fmtMoney, plural, tidy, txLink } from '@/lib/format.js';
 import { api, useApp } from './app.jsx';
-import { Icon, Jar, Money, Segmented } from './ui.jsx';
+import { Icon, Jar, Money, Segmented, Spinner } from './ui.jsx';
 
 const whole = (cents) => fmtMoney(Math.round(cents / 100) * 100).replace(/,00$/, '');
 const exact = (cents) => fmtMoney(cents);
@@ -96,7 +96,7 @@ export function Cut({ data }) {
       </section>
 
       <div className={`ai-bar budget-ai${config.aiConfigured ? '' : ' is-quiet'}`} role="region" aria-label="AI tips">
-        <span className="ai-mark"><Icon name="sparkle" /></span>
+        <span className="ai-mark">{aiBusy ? <Spinner /> : <Icon name="sparkle" />}</span>
         {!config.aiConfigured ? (
           <div className="ai-text"><strong>Ranked by yearly amount</strong><p>Choose an AI under <Link href="/settings">Settings</Link> to have it rank these by what’s most worth doing, with a concrete tip for each.</p></div>
         ) : aiBusy ? (

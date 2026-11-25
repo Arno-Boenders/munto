@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { cleanDesc, fmtDate, fmtIban, fmtMoney, fmtShort, plural, signed, tidy } from '@/lib/format.js';
 import { api, useApp } from './app.jsx';
-import { CategoryChip, Icon, Jar, Money, useKey } from './ui.jsx';
+import { CategoryChip, Icon, Jar, Money, Spinner, useKey } from './ui.jsx';
 
 const PAGE = 20;
 
@@ -65,6 +65,7 @@ export function Review({ groups }) {
   }
 
   const suggested = visible.filter((g) => suggestions[g.key]);
+  const waiting = visible.length - suggested.length;
   async function acceptAll() {
     setBusy(true);
     const items = suggested.map((g) => ({ group: g, category: categoryOf(g) })).filter((i) => i.category && i.category !== '__new');
@@ -79,11 +80,11 @@ export function Review({ groups }) {
   let aiBar;
   if (!config.aiConfigured) {
     aiBar = <><span className="ai-mark is-quiet"><Icon name="sparkle" /></span><div className="ai-text"><strong>Let an AI pre-sort these</strong><MissingAiHelp /></div></>;
-  } else if (aiLoading) {
+  } else if (aiLoading && waiting) {
     aiBar = (
-      <><span className="ai-mark"><Icon name="sparkle" /></span>
-        <div className="ai-text"><strong>{`${config.aiName ?? 'AI'} is suggesting pots for ${plural(groups.length, 'merchant')}…`}</strong>
-          <p>{`Only the names, ${config.aiSendsAmounts ? 'amounts ' : 'in or out '}and descriptions of these unsorted transactions are sent, to ${config.aiSentTo ?? 'the AI you chose'}.`}</p></div></>
+      <><span className="ai-mark"><Spinner /></span>
+        <div className="ai-text"><strong>{`${config.aiName ?? 'AI'} is suggesting pots for ${plural(waiting, 'merchant')}…`}</strong>
+          <p>{`You can already sort them yourself. Only the names, ${config.aiSendsAmounts ? 'amounts ' : 'in or out '}and descriptions of these unsorted transactions are sent, to ${config.aiSentTo ?? 'the AI you chose'}.`}</p></div></>
     );
   } else if (!config.aiAuto && !suggested.length) {
     aiBar = (
@@ -149,7 +150,7 @@ const shortDate = (iso) => (iso.slice(0, 4) === String(new Date().getFullYear())
 // One merchant to sort. Picking a pot saves it (the toast can undo it); a pot the AI suggested is
 // taken with Accept. Only a transfer to what may be your own account asks first, with Save.
 function SortCard({ group, category, onPick, onGone, setDone }) {
-  const { config, suggestions, toast, refresh, skip, unskip } = useApp();
+  const { config, suggestions, aiLoading, toast, refresh, skip, unskip } = useApp();
   const { transferCategory } = config;
   const suggestion = suggestions[group.key];
   const incoming = group.totalCents > 0;
@@ -251,6 +252,8 @@ function SortCard({ group, category, onPick, onGone, setDone }) {
           </div>
           {suggestion ? (
             <div className="sort-reason"><span className="ai-mark"><Icon name="sparkle" />Suggested</span>{' · '}{suggestion.reason || suggestion.category}</div>
+          ) : aiLoading && !category ? (
+            <div className="sort-reason is-waiting"><Spinner />Looking for a pot…</div>
           ) : null}
           {incoming ? <div className="hint">Paid back? Pick the pot it was for.</div> : null}
           {isTransfer ? (

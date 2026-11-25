@@ -13,6 +13,9 @@ export function Icon({ name }) {
   );
 }
 
+// Something is working in the background. The words next to it say what.
+export const Spinner = () => <span className="spinner" aria-hidden="true" />;
+
 // An amount, with even-width digits so columns line up.
 export function Money({ cents, sign = false, className = '' }) {
   return <span className={`money ${className}`.trim()}>{sign ? signed(cents) : fmtMoney(cents)}</span>;
